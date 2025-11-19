@@ -6,18 +6,58 @@
     <title>Catan Database</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Stack+Sans+Headline:wght@200..700&display=swap"
-        rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Lexend:wght@100..900&family=Stack+Sans+Headline:wght@200..700&display=swap"
+    rel="stylesheet">
 
     <link href="/style.css" rel="stylesheet" type="text/css" media="all">
     <script src="code.js"></script>
 </head>
 
-<body>
+<body class="background">
+    <section class="catan-background-color">
+        <div class="center center-text">
+            <p class="catan-font catan-font-color" style="font-size: 150px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">CATAN</p>
+            <p class="catan-font catan-font-color" style="font-size: 50px;">DATABASE</p>
+        </div>
+    </section>
 
+    <div class="card-style">
+        <div class="center center-text horizontal-text header-text">
+            <p><a href="search.html">Search Database</a></p>
+            <p><a href="add.html">Add Game</a></p>
+        </div>
+    </div>
+
+    <section class="card-style">
+        <h2 class="catan-font catan-font-color" style="padding-left: 10px;">PLAYERS</h2>
+        <div class="grid-container">
+            <ul class="card-list" id="dynamic-player-list">
+                <!--
+                <li>
+                    <div class="person-card">
+                        <img src="media/isaac.png" alt="isaac">
+            
+                        <div class="list">
+                            <h3>STATS</h3>
+                            <ul>
+                                <li>TOTAL WINS:</li>
+                                <li>GAMES PLAYED:</li>
+                                <li>WIN PERCENTAGE:</li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                -->
+            </ul>
+        </div>
+    </section>
+
+    <script>createPlayerCards()</script>
 </body>
 
 </html>
+
+
