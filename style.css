@@ -75,9 +75,6 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
 }
 
 .card-list {
-    /* margin: 10px; */
-    /* display: flex; */
-
     list-style: none;
     margin: 0;
     padding: 0;
@@ -86,7 +83,7 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
 
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: auto auto auto auto;
     gap: 20px;
     padding: 10px;
 }
@@ -129,28 +126,3 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
     border-width: 1px;
     border-style: solid; 
 }
-
-
-
-/* .person-cardX {
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    text-align: center;
-}
-
-.person-cardX img {
-    max-width: 100%;
-    border-radius: 50%;
-    margin-bottom: 10px;
-}
-
-.person-cardX .listX h3 {
-    margin: 10px 0 5px 0;
-}
-
-.person-cardX .listX ul {
-    padding-left: 20px;
-    text-align: left;
-} */

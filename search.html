@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Catan Database</title>
+    <link rel="icon" type="image/x-icon" href="media/catan-favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,3 +27,31 @@
 </body>
 
 </html>
+
+<!--
+Queries to add
+
+- search for given game with id
+    - see each player in that game
+    - stats about game (time taken, total trades made)
+    - what did the board look like?
+- search for player by name
+    - total trades
+    - total buildings built
+    - total wins
+- search trades across all games (just a single page no input required)
+    - all trades made
+    - trades by player
+    - trades by game
+
+-- SQL pseudocode --
+
+* game search
+SELECT playerID, time_taken, total_trades, board_state (tiles only) FROM __ WHERE gameID = <user_input>
+
+* players in game
+for the given game we also need facts about how each player performed in the game
+SELECT victoryPoints, num_trades, 
+
+
+-->
