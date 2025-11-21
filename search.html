@@ -24,34 +24,46 @@
             <p class="catan-font catan-font-color" style="font-size: 50px;">DATABASE</p>
         </div>
     </section>
+
+    <section class="card-style">
+        <h2 class="catan-font catan-font-color" style="padding-left: 10px;">SEARCH BY PLAYER</h2>
+        <div class="center center-text horizontal-text header-text" id="dynamic-player-buttons">
+            <!-- <button class="player-button">
+                <p>Isaac</p>
+            </button>
+            <button class="player-button">
+                <p>Jake</p>
+            </button> -->
+        </div>
+        <div class="center line"></div>
+        <div class="center center-text">
+            <section>
+                <h3 class="catan-font catan-font-color" style="padding-top: 10px;">PLAYER STATS</h3>
+                <div class="player-info-card" id="dynamic-player-info">
+                    <!-- <p>PLAYER NAME: Isaac</p>
+                    <p>TOTAL TRADES: 2</p> -->
+                </div>
+            </section>
+        </div>
+    </section>
+    <script>createPlayerButtons()</script>
+
+    <section class="card-style">
+        <h2 class="catan-font catan-font-color" style="padding-left: 10px;">SEARCH BY GAME</h2>
+        <div class="center center-text horizontal-text header-text" id="dynamic-game-buttons">
+            <div class="game-button">
+                <p>GAME:</p>
+                <div><img src="media/catan-board.png"></div>
+                <p>WINNER:</p>
+            </div> 
+                        <div class="game-button">
+                            <p>GAME:</p>
+                            <div><img src="media/catan-board.png"></div>
+                            <p>WINNER:</p>
+                        </div>
+        </div>
+    </section>
+    <script>createGameButtons()</script>
 </body>
 
 </html>
-
-<!--
-Queries to add
-
-- search for given game with id
-    - see each player in that game
-    - stats about game (time taken, total trades made)
-    - what did the board look like?
-- search for player by name
-    - total trades
-    - total buildings built
-    - total wins
-- search trades across all games (just a single page no input required)
-    - all trades made
-    - trades by player
-    - trades by game
-
--- SQL pseudocode --
-
-* game search
-SELECT playerID, time_taken, total_trades, board_state (tiles only) FROM __ WHERE gameID = <user_input>
-
-* players in game
-for the given game we also need facts about how each player performed in the game
-SELECT victoryPoints, num_trades, 
-
-
--->

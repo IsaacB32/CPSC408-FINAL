@@ -25,10 +25,10 @@
         </div>
     </section>
 
-    <div class="card-style">
+    <div class="card-style" style="padding-bottom: 0px;">
         <div class="center center-text horizontal-text header-text">
-            <p><a href="search.html">Search Database</a></p>
-            <p><a href="add.html">Add Game</a></p>
+            <p id="large-padding"><a href="search.html">Search Database</a></p>
+            <p id="large-padding"><a href="add.html">Add Game</a></p>
         </div>
     </div>
 
@@ -61,4 +61,37 @@
 
 </html>
 
+<!--
+Queries to add
 
+- search for given game with id
+    - see each player in that game
+    - stats about game (time taken, total trades made)
+    - what did the board look like?
+- search for player by name
+    - total trades
+    - total buildings built
+    - total wins
+- search trades across all games (just a single page no input required)
+    - all trades made
+    - trades by player
+    - trades by game
+
+-- SQL pseudocode --
+
+* game search (given a gameID)
+SELECT playerID, time_taken, total_trades, board_state (tiles only) FROM __ WHERE gameID = <given_game>
+
+for the given game we also need facts about how each player performed in the game
+SELECT victoryPoints, num_trades, buildings_built FROM __ WHERE gameID = <given_game> AND playerID = <for_each_player>
+
+* player search (given a playerID)
+these stats will be across all games
+SELECT total_trades, total_buildings_built (of each type), (other simple stats) FROM player WHERE playerID = <given_player>
+
+* trade search (no input, just all trades made)
+there will be several variations of this query
+SELECT * FROM trades (GROUP BY playerID)
+SELECT * FROM trades WHERE playerID = <given_player_id>
+SELECT * FROM trades WHERE gameID = <given_game_id>
+-->

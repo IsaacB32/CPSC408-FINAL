@@ -10,10 +10,24 @@ body {
     --catan-orange: #d06a33;
     --catan-yellow: #ffdc54;
     --catan-light-yellow: #fbf091;
+
+    --isaac-color: white;
+    --jake-color: red;
+    --seth-color: var(--color-brown);
+    --blaise-color: blue;
+    --michael-color: green;
+    --faith-color: orange;
 }
 
 h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
     cursor: default;
+}
+
+.line {
+    width: 600px;
+    border-style: dotted;
+    border-width: 1px;
+    border-bottom: rgba(0, 0, 0, 0.048);
 }
 
 .center {
@@ -30,7 +44,7 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
     align-items: center;
     justify-content: center;
 }
-.horizontal-text p {
+#large-padding {
     margin: 0px 100px 0px 100px;
 }
 
@@ -69,6 +83,7 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
 .card-style {
     background-color: var(--color-red);
     margin-top: 8px;
+    padding-bottom: 20px;
 }
 .card-style ul {
     list-style: none;
@@ -120,6 +135,60 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
     margin-bottom: 5px;
     border-bottom: 1px solid #ccc;
 }
+
+.player-button {
+    width: 120px;
+    height: 60px;
+    border-radius: 20px;
+    background-color: gray;
+    border-width: 4px;
+    border-style: solid;
+    margin-bottom: 10px;
+    border-color: black;
+    /* animation:  */
+}
+.player-button p {
+    margin-top: 14px;
+    font-size: large;
+}
+
+.player-info-card {
+    height: 100px;
+    background-color: white;
+    padding: 1px;
+}
+.player-info-card p {
+    background-color: grey;
+    margin-top: 10px;
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+
+.game-button {
+    border-radius: 10%;
+    border-color: black;
+    border-width: 5px;
+    border-style: solid;
+    width: 200px;
+    height: 200px;
+    background-color: white;
+}
+.game-button p {
+    margin-bottom: 10px;
+    margin-top: 8px;
+}
+.game-button div {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.game-button img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+}
+
 
 #debug-border {
     border-color: green;
