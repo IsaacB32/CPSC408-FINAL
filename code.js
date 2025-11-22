@@ -1,21 +1,31 @@
+async function runQuery(action, data = {}) {
+    const response = await fetch("server.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, data })
+    });
+    const dbData = await response.json();
+    return dbData;
+}
 
 async function createPlayerCards() {
 
-    const response = await fetch("indexconnection.php");
-    const dbData = await response.json();
-
+    const dbData = await runQuery("getPlayers");
     const data = dbData.map(player => {
         return {
             playerName: player.name,
             wins: player.wins,
+            totalGames: player.totalGamesPlayed,
+            percent: (player.wins/player.totalGamesPlayed) * 100,
             imagesrc: `media/${player.name.toLowerCase()}.png`
         };
     });
+    console.log(dbData);
 
     const stats = [
-            { title: "TOTAL WINS", key: "wins"}//,
-            // { title: "GAMES PLAYED", key: "played"},
-            // { title: "WIN PERCENTAGE", key: "percent"}
+            { title: "TOTAL WINS", key: "wins"},
+            { title: "GAMES PLAYED", key: "totalGames"},
+            { title: "WIN PERCENTAGE", key: "percent"}
         ];
 
     const tableBody = document.querySelector("#dynamic-player-list");
@@ -34,7 +44,7 @@ async function createPlayerCards() {
         list_container.classList.add("list");
 
         const stats_title = document.createElement("h3");
-        stats_title.textContent = "STATS";
+        stats_title.textContent = `${rowData.playerName} -- STATS`;
         list_container.appendChild(stats_title);
         
         const stats_list = document.createElement("ul");
@@ -55,9 +65,7 @@ async function createPlayerCards() {
 
 async function createPlayerButtons() {
 
-    const response = await fetch("playersearchconnection.php");
-    const dbData = await response.json();
-
+    const dbData = await runQuery("getPlayers");
     const data = dbData.map(player => {
         return {
             playerName: player.name,
@@ -66,16 +74,7 @@ async function createPlayerButtons() {
         };
     });
 
-    const trade_response = await fetch("playerinfoconnection.php");
-    const trade_dbData = await trade_response.json();
-
-    const trade_data = trade_dbData.map(trade => {
-        return {
-            playerName: trade.name,
-            playerID: trade.playerID,
-            totalTrades: trade.totalTrades
-        }
-    });
+    const trade_dbData = await runQuery("getTradeCounts");
 
     const tableBody = document.querySelector("#dynamic-player-buttons");
     tableBody.innerHTML = "";
@@ -92,7 +91,7 @@ async function createPlayerButtons() {
             player_button.style.backgroundColor = ''
         });
         player_button.addEventListener('click', function () {
-            queryPlayer(trade_data.find((element) => element.playerID == rowData.playerID));
+            queryPlayer(trade_dbData.find((element) => element.playerID == rowData.playerID));
         });
 
         const label = document.createElement("p");
@@ -109,7 +108,7 @@ function queryPlayer(data) {
 
     if (data) {
         const label_name = document.createElement("p");
-        label_name.textContent = `PLAYER NAME: ${data.playerName}`;
+        label_name.textContent = `PLAYER NAME: ${data.name}`;
         tableBody.appendChild(label_name);
 
         const label_total_trades = document.createElement("p");
@@ -121,9 +120,8 @@ function queryPlayer(data) {
     }
 }
 
-
-function playerColor(playerName) {
-    switch(playerName.toLowerCase()) {
+function playerColor(name) {
+    switch(name.toLowerCase()) {
         case "isaac":
             return "var(--isaac-color)";
         case "jake":
@@ -141,6 +139,75 @@ function playerColor(playerName) {
     }
 }
 
-function createGameButtons() {
-    
+async function createGameButtons() {
+    const tableBody = document.querySelector("#dynamic-game-buttons");
+    tableBody.innerHTML = "";
+
+    const dbData = await runQuery("getGamesCard");
+
+    dbData.forEach(rowData => {
+        const game_button = document.createElement("a");
+        game_button.classList.add("game-button");
+        game_button.href = `gameview.html?gameID=${rowData.gameID}`;
+
+        const game_name = document.createElement("p");
+        game_name.textContent = `GAME: ${rowData.gameID}`;
+        game_button.appendChild(game_name);
+
+        const image_div = document.createElement("div");
+        const game_image = document.createElement("img");
+        game_image.src = "media/catan-board.png";
+        image_div.appendChild(game_image);
+        game_button.appendChild(image_div);
+
+        const game_winner = document.createElement("p");
+        game_winner.textContent = `WINNER: ${rowData.winner}`;
+        game_button.appendChild(game_winner);
+
+        tableBody.appendChild(game_button);
+    });
+}
+
+async function createGameView(gameID) {
+    const dbData = await runQuery("getBoard", {gameID: gameID});
+    var size;
+    if (dbData.length > 20) size = [4,5,6,5,4];
+    else size = [3,4,5,4,3];
+
+    drawBoard(dbData, size);
+}
+
+function drawBoard(data, rowSize) {
+    const tableBody = document.querySelector("#dynamic-board");
+    tableBody.innerHTML = "";
+
+    var row = [];
+    var counter = 0;
+    var sizeIndex = 0;
+    data.forEach(rowData => {
+        const hex = document.createElement("div");
+        hex.classList.add("hex", `${rowData.resource.toLowerCase()}`);
+
+        if (rowData.number != null) {
+            const token = document.createElement("div");
+            token.classList.add("token");
+            token.textContent = `${rowData.number}`;
+            hex.appendChild(token);
+        }
+
+        row.push(hex);
+
+        if (row.length == rowSize[sizeIndex]) {
+            const hexRow = document.createElement("div");
+            hexRow.classList.add("hex-row");
+
+            row.forEach(r => {
+                hexRow.appendChild(r);
+            });
+            tableBody.appendChild(hexRow);
+
+            row = [];
+            sizeIndex++;
+        }
+    });
 }
