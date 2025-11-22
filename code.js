@@ -44,7 +44,7 @@ async function createPlayerCards() {
         list_container.classList.add("list");
 
         const stats_title = document.createElement("h3");
-        stats_title.textContent = `${rowData.playerName} -- STATS`;
+        stats_title.textContent = `${rowData.playerName}`;
         list_container.appendChild(stats_title);
         
         const stats_list = document.createElement("ul");

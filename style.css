@@ -206,6 +206,7 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
     padding-top: 60px;
     background-color: beige;
     padding-bottom: 10px;
+    border-radius: 5px;
   }
 
 .hex-row {
@@ -236,7 +237,7 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
 .wheat { background: #FBC02D; }
 .brick { background: #D84315; }
 .sheep { background: #AED581; }
-.desert { background: #D7CCC8; }
+.desert { background: #e4e3bb; }
 
 /* Number token (circle) */
 .token {
