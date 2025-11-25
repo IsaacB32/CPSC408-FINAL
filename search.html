@@ -25,6 +25,12 @@
         </div>
     </section>
 
+    <div class="card-style" style="padding-bottom: 0px;">
+        <div class="center center-text horizontal-text header-text">
+            <p id="large-padding"><a href="index.html">Back</a></p>
+        </div>
+    </div>
+
     <section class="card-style">
         <h2 class="catan-font catan-font-color" style="padding-left: 10px;">SEARCH BY PLAYER</h2>
         <div class="center center-text horizontal-text header-text" id="dynamic-player-buttons">
@@ -58,8 +64,37 @@
         </div>
     </section>
 
-    <script>createPlayerButtons()</script>
-    <script>createGameButtons()</script>
+    <section class="card-style">
+        <h2 class="catan-font catan-font-color" style="padding-left: 10px;">ALL TRADES</h2>
+        <div class="center center-text">
+            <div class="horizontal-text header-text trade-player-button" id="dynamic-player-buttons">
+                <p class="catan-font catan-font-color">PLAYER TRADES</p>
+            </div>
+            <div class="center horizontal-text header-text">
+                <p class="catan-font catan-font-color">GAVE OR RECIEVED</p>
+                <button id="gave" class="player-button trade-filter" onclick="filterClicked(this)">
+                    <p>GAVE</p>
+                </button>
+                <button id="recieved" class="player-button trade-filter" onclick="filterClicked(this)">
+                    <p>RECIEVED</p>
+                </button>
+                <button id="both" class="player-button trade-filter trade-selected" onclick="filterClicked(this)">
+                    <p>BOTH</p>
+                </button>
+            </div>
+            <div class="line"></div>
+           <h3 class="catan-font catan-font-color" id="totaltrades">TOTAL TRADES MADE</h3>
+           <div id="dynamic-trade-all">
+            
+           </div>
+        </div>
+    </section>
+
+    <script>
+        createPlayerButtons();
+        createGameButtons();
+        // tradeInfo(); -- called by createGameButtons()
+    </script>
 </body>
 
 </html>

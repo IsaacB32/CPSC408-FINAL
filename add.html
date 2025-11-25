@@ -24,6 +24,47 @@
             <p class="catan-font catan-font-color" style="font-size: 50px;">DATABASE</p>
         </div>
     </section>
+
+    <div class="card-style" style="padding-bottom: 0px;">
+        <div class="center center-text horizontal-text header-text">
+            <p id="large-padding"><a href="index.html">Back</a></p>
+        </div>
+    </div>
+
+    <section class="card-style">
+        <h2 class="catan-font catan-font-color" style="padding-left: 10px;">ADD PLAYER</h2>
+        <form action="javascript:;" onsubmit="submitPlayer(this)" method="POST" class="center center-text">
+            <div class="input-item">
+                <label for="name">NAME</label>
+                <input type="text" name="name" required placeholder="player name"><br>
+            </div>
+            <input type="submit" value="Add Player"><br>
+        </form>
+    </section>
+
+    <section class="card-style">
+        <h2 class="catan-font catan-font-color" style="padding-left: 10px;">ADD GAME</h2>
+        <form action="javascript:;" onsubmit="submitGame(this)" method="POST" class="center center-text">
+            <div class="input-item">
+                <label for="date">Date </label>
+                <input type="date" name="date" required><br>
+            </div>
+            <div class="input-item">
+                <label for="duration">Duration (minutes) </label> 
+                <input type="number" name="duration" required placeholder="60"><br>
+            </div>
+            <div class="input-item">
+                <label for="winner">Winner </label> 
+                <select name="winner" id="dynamic-player-winner-label" required>
+                    <option value="player">Player</option>
+                </select>
+            </div>
+            <input type="submit" value="Add Game">
+        </form>
+    </section>
+
+    <script>addPlayerDropdown();</script>
 </body>
 
 </html>
+

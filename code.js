@@ -20,7 +20,6 @@ async function createPlayerCards() {
             imagesrc: `media/${player.name.toLowerCase()}.png`
         };
     });
-    console.log(dbData);
 
     const stats = [
             { title: "TOTAL WINS", key: "wins"},
@@ -37,7 +36,16 @@ async function createPlayerCards() {
         card.classList.add("person-card");
 
         const img = document.createElement("img");
-        img.src = rowData.imagesrc;
+        //https://www.geeksforgeeks.org/javascript/how-to-check-mentioned-file-exists-or-not-using-javascript-jquery/
+        var http = new XMLHttpRequest();
+        http.open('HEAD', rowData.imagesrc, false);
+        http.send();
+        if (http.status === 200) {
+            img.src = rowData.imagesrc;
+        } else {
+            img.src = "media/default_player.png";
+        }
+        //--
         card.appendChild(img);
 
         const list_container = document.createElement("div");
@@ -76,30 +84,42 @@ async function createPlayerButtons() {
 
     const trade_dbData = await runQuery("getTradeCounts");
 
-    const tableBody = document.querySelector("#dynamic-player-buttons");
-    tableBody.innerHTML = "";
+    const tableBody = document.querySelectorAll("#dynamic-player-buttons");
+    tableBody.forEach(body => {
+        // body.innerHTML = "";
 
-    data.forEach(rowData => {
-        const player_button = document.createElement("button");
-        player_button.classList.add("player-button")
-        player_button.id = `${rowData.playerID}`;
+        data.forEach(rowData => {
+            const player_button = document.createElement("button");
+            player_button.classList.add("player-button")
+            player_button.id = `${rowData.playerID}`;
 
-        player_button.addEventListener('mouseover', function () {
-            player_button.style.backgroundColor=`${rowData.color}`;
+            if (body.classList.contains("trade-player-button")) player_button.classList.add("trade-selected")
+
+            player_button.addEventListener('mouseover', function () {
+                player_button.style.backgroundColor = `${rowData.color}`;
+            });
+            player_button.addEventListener('mouseleave', function () {
+                player_button.style.backgroundColor = ''
+            });
+            player_button.addEventListener('click', function () {
+                if (body.classList.contains("trade-player-button")) {
+                    player_button.classList.toggle("trade-selected");
+                    tradeInfo();
+                }
+                else {
+                    queryPlayer(trade_dbData.find((element) => element.playerID == rowData.playerID));
+                }
+            });
+
+            const label = document.createElement("p");
+            label.textContent = `${rowData.playerName}`;
+
+            player_button.appendChild(label);
+            body.appendChild(player_button);
         });
-        player_button.addEventListener('mouseleave', function () {
-            player_button.style.backgroundColor = ''
-        });
-        player_button.addEventListener('click', function () {
-            queryPlayer(trade_dbData.find((element) => element.playerID == rowData.playerID));
-        });
-
-        const label = document.createElement("p");
-        label.textContent = `${rowData.playerName}`;
-
-        player_button.appendChild(label);
-        tableBody.appendChild(player_button);
     });
+
+    tradeInfo();
 }
 
 function queryPlayer(data) {
@@ -168,6 +188,66 @@ async function createGameButtons() {
     });
 }
 
+async function tradeInfo() {
+    const selection = document.getElementsByClassName("trade-selected");
+    if (selection) {
+        var ids = [];
+        for (let item of selection) {
+            ids.push(item.id);
+        }
+        if(ids.length == 1) {
+            const total = document.getElementById("totaltrades");
+            total.innerHTML = `TOTAL TRADES MADE: 0`;
+
+            const tableBody = document.querySelector("#dynamic-trade-all");
+            tableBody.innerHTML = "";
+            return;
+        }
+
+        const data = await runQuery("getAllTrades", { ids: ids });
+
+        const total = document.getElementById("totaltrades");
+        total.innerHTML = `TOTAL TRADES MADE: ${data.length}`;
+
+        const tableBody = document.querySelector("#dynamic-trade-all");
+        tableBody.innerHTML = "";
+        data.forEach(rowData => {
+            const container = document.createElement("div");
+            container.classList.add("horizontal-text", "trade");
+            
+            const p1 = document.createElement("p");
+            p1.textContent = `${rowData.Player1}`;
+            container.appendChild(p1);
+
+            const g1 = document.createElement("p");
+            g1.textContent = "Gave";
+            container.appendChild(g1);
+
+            const r1 = document.createElement("p");
+            r1.textContent = `${rowData.Gave1}`;
+            container.appendChild(r1);
+
+            const a = document.createElement("a");
+            a.textContent = "AND";
+            container.appendChild(a);
+
+            const p2 = document.createElement("p");
+            p2.textContent = `${rowData.Player2}`;
+            container.appendChild(p2);
+
+            const g2 = document.createElement("p");
+            g2.textContent = "Gave";
+            container.appendChild(g2);
+
+            const r2 = document.createElement("p");
+            r2.textContent = `${rowData.Gave2}`;
+            container.appendChild(r2);
+
+            tableBody.appendChild(container);
+        });
+    }
+}
+
 async function createGameView(gameID) {
     const dbData = await runQuery("getBoard", {gameID: gameID});
     var size;
@@ -210,4 +290,64 @@ function drawBoard(data, rowSize) {
             sizeIndex++;
         }
     });
+}
+
+function filterClicked(clicked) {
+    const buttons = document.getElementsByClassName("trade-filter");
+    for (let f of buttons) {
+        f.classList.remove("trade-selected");
+    }
+    clicked.classList.add("trade-selected");
+    tradeInfo();
+}
+
+async function addPlayerDropdown() {
+    const dbData = await runQuery("getPlayers");
+    const data = dbData.map(player => {
+        return {
+            playerName: player.name,
+            id: player.playerID
+        };
+    });
+
+    const tableBody = document.querySelector("#dynamic-player-winner-label");
+    tableBody.innerHTML = "";
+
+    data.forEach(rowData => {
+        const option = document.createElement("option");
+        option.value = rowData.id;
+        option.innerHTML = rowData.playerName;
+        tableBody.appendChild(option);
+    });
+}
+
+//https://stackoverflow.com/questions/10520899/form-action-with-javascript
+async function submitPlayer(data) {
+
+    var values = {};
+    for (element of data) {
+        if (element.type == "submit") continue;
+        values[`${element.name}`] = element.value;
+    }
+
+    //https://code-boxx.com/call-php-file-from-javascript/
+    const response = await fetch("add_player.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values)
+    });
+    const dbData = await response.json();
+    if (dbData === "success") notification("New Player Added!");
+    else notification("Error Adding Player!");
+}
+
+function submitGame(data) {
+    for (element of data) {
+        if (element.type == "submit") continue;
+        console.log(element);
+    }
+}
+
+function notification(msg) {
+    alert(msg);
 }

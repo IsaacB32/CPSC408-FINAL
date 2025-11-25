@@ -7,11 +7,12 @@ In order to get mysql working you must change the following code on line 12 of t
 $conn = new mysqli("localhost", "root", "CPSC408!", "CatanTest");
 //$conn = new mysqli(<host_name>, <username>, <password>, <database_schema_name>);
 ```
+you also must change this in line
 If `mysqli` cannot be found you might be missing some requirements, google to fix.
 
 ### Requirements
 - [X] 1. Print/display records from your database/tables.
-- [ ] 2. Query for data/results with various parameters/filters
+- [X] 2. Query for data/results with various parameters/filters
 - [ ] 3. Create a new record
 - [ ] 4. Delete records (soft delete function would be ideal)
 - [ ] 5. Update records

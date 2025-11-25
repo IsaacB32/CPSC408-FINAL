@@ -150,6 +150,9 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
     margin-top: 14px;
     font-size: large;
 }
+.player-button:hover {
+    transform: scale(1.05);
+}
 
 .player-info-card {
     height: 100px;
@@ -162,6 +165,7 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
     margin-left: 100px;
     margin-right: 100px;
 }
+
 
 /* GAME BUTTONS */
 .game-button {
@@ -230,8 +234,6 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
     color: #222;
 }
 
-
-/* Resource colors */
 .wood { background: #4CAF50; }
 .rock { background: #9E9E9E; }
 .wheat { background: #FBC02D; }
@@ -239,7 +241,6 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
 .sheep { background: #AED581; }
 .desert { background: #e4e3bb; }
 
-/* Number token (circle) */
 .token {
     position: absolute;
     width: 46px;
@@ -254,6 +255,48 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+
+/* TRADES */
+.trade {
+    background-color: white;
+    border-radius: 20px;
+    margin: 10px;
+}
+.trade p {
+    background-color: #d06a33;
+}
+.trade a {
+    background-color: #f0ad00;
+
+}
+.trade p, .trade a {
+    border-radius: 3px;
+    padding: 10px;
+}
+.trade-selected {
+    border-color: gold;
+}
+
+.input-item {
+    background-color: #7b6f83;
+    margin: 5px 170px 5px 170px;
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 1px;
+    padding: 5px 0px 5px 0px;
+}
+.input-item label {
+    font-family: "Lexend", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+
+    background: linear-gradient(var(--catan-yellow), var(--catan-light-yellow));
+    background-clip: text;
+    color: transparent;
+    margin: auto;
 }
 
 #debug-border {
