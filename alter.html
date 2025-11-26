@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Catan Database</title>
+    <link rel="icon" type="image/x-icon" href="media/catan-favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Lexend:wght@100..900&family=Stack+Sans+Headline:wght@200..700&display=swap"
+        rel="stylesheet">
+
+    <link href="/style.css" rel="stylesheet" type="text/css" media="all">
+    <script src="code.js"></script>
+</head>
+
+<body class="background">
+    <section class="catan-background-color">
+        <div class="center center-text">
+            <p class="catan-font catan-font-color" style="font-size: 150px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <a href="index.html">CATAN</a></p>
+            <p class="catan-font catan-font-color" style="font-size: 50px;">DATABASE</p>
+        </div>
+    </section>
+
+    <div class="card-style" style="padding-bottom: 0px;">
+        <div class="center center-text horizontal-text header-text">
+            <p id="large-padding"><a href="index.html">Back</a></p>
+        </div>
+    </div>
+
+    <section class="card-style">
+        <h2 class="catan-font catan-font-color" style="padding-left: 10px;">ALTER PLAYER</h2>
+        <div class="center center-text">
+            <h3 class="catan-font catan-font-color" style="margin-bottom: 10px;">CLICK PLAYER TO ALTER</h3>
+            <div class="horizontal-text header-text remove-player-button" id="dynamic-player-buttons">
+  
+            </div>
+
+            <div class="person-card">
+                <img id="player-alter-image" src="media/isaac.png">
+                <div class="list">
+                    <h3>INFO</h3>
+                    <ul>
+                        <li>
+                            <label for="player-name">Name: </label>
+                            <input type="text" id="player-alter-name" value="name"><br>
+                            <a style="visibility: hidden;" class="info-location" id=""></a>
+                        </li>
+                        <!-- <li>
+                            <label for="player-name">Name: </label>
+                            <input type="text" id="player-alter-name" value="name"><br>
+                        </li>
+                        <li>
+                            <label for="player-name">Name: </label>
+                            <input type="text" id="player-alter-name" value="name"><br>
+                        </li>
+                    </ul> -->
+                </div>
+                <button onclick="alterPlayer()">Save Changes</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        createPlayerButtons(false);
+        displayPlayer(1);
+    </script>
+</body>
+
+</html>
+

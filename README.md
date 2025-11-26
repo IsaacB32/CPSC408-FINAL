@@ -7,17 +7,19 @@ In order to get mysql working you must change the following code on line 12 of t
 $conn = new mysqli("localhost", "root", "CPSC408!", "CatanTest");
 //$conn = new mysqli(<host_name>, <username>, <password>, <database_schema_name>);
 ```
-you also must change this in line
+you also must change the same statement on line 8 of the `app_player.php` file.
+
+
 If `mysqli` cannot be found you might be missing some requirements, google to fix.
 
 ### Requirements
 - [X] 1. Print/display records from your database/tables.
 - [X] 2. Query for data/results with various parameters/filters
-- [ ] 3. Create a new record
+- [X] 3. Create a new record
 - [ ] 4. Delete records (soft delete function would be ideal)
-- [ ] 5. Update records
+- [X] 5. Update records
 - [ ] 6. Make use of transactions (commit & rollback)
-- [ ] 7. Generate reports that can be exported (excel or csv format)
+- [X] 7. Generate reports that can be exported (excel or csv format)
 - [X] 8. One query must perform an aggregation/group-by clause
 - [ ] 9. One query must contain a subquery.
 - [ ] 10. Two queries must involve joins across at least 3 tables

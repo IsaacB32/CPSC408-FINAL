@@ -1,4 +1,7 @@
 <?php
+//References 
+//https://www.w3schools.com/php/php_mysql_prepared_statements.asp
+//https://www.w3schools.com/php/php_mysql_connect.asp
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 header("Content-Type: application/json");
@@ -121,6 +124,55 @@ function getAllTrades($conn, $ids) {
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
+function addPlayer($conn, $data) {
+    $name = mysqli_real_escape_string($conn, $data['name']);
+
+    $query = "
+        INSERT INTO player(name, wins, numClosets) VALUES ('$name', 0, 0)
+    ";
+
+    if ($conn->query($query) === TRUE) {
+        return "success";
+    } else {
+        return "Error: " . $sql . "<br>" . $conn->error;
+    }
+}
+
+function getPlayerFromID($conn, $id) {
+    $stmt = $conn->prepare("
+        SELECT * FROM player WHERE playerID = ?
+    ");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+function removePlayer($conn, $id) {
+    $query = "
+        INSERT INTO player(name, wins, numClosets) VALUES ('$name', 0, 0)
+    ";
+
+    if ($conn->query($query) === TRUE) {
+        return "success";
+    } else {
+        return "Error: " . $sql . "<br>" . $conn->error;
+    }
+}
+
+function alterPlayer($conn, $name, $id) {
+    $query = "
+        UPDATE player
+        SET name = '$name'
+        WHERE playerID = $id;
+    ";
+
+    if ($conn->query($query) === TRUE) {
+        return "success";
+    } else {
+        return "Error: " . $sql . "<br>" . $conn->error;
+    }
+}
+
 switch ($action) {
     case "getTradeCounts":
         echo json_encode(getTradeCounts($conn));
@@ -144,6 +196,19 @@ switch ($action) {
 
     case "getAllTrades":
         echo json_encode(getAllTrades($conn, $data["ids"]));
+        break;
+
+    case "addPlayer":
+        echo json_encode(addPlayer($conn, $data));
+        break;
+    case "removePlayer":
+        echo json_encode(removePlayer($conn, $data['id']));
+        break;
+    case "getPlayerFromID":
+        echo json_encode(getPlayerFromID($conn, $data['id']));
+        break;
+    case "alterPlayer":
+        echo json_encode(alterPlayer($conn, $data['name'], $data['id']));
         break;
 
     default:

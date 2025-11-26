@@ -71,7 +71,7 @@ async function createPlayerCards() {
     });
 }
 
-async function createPlayerButtons() {
+async function createPlayerButtons(tradeAfter = true) {
 
     const dbData = await runQuery("getPlayers");
     const data = dbData.map(player => {
@@ -94,17 +94,21 @@ async function createPlayerButtons() {
             player_button.id = `${rowData.playerID}`;
 
             if (body.classList.contains("trade-player-button")) player_button.classList.add("trade-selected")
+            else if (body.classList.contains("remove-player-button")) player_button.classList.add("remove-player");
 
             player_button.addEventListener('mouseover', function () {
                 player_button.style.backgroundColor = `${rowData.color}`;
             });
             player_button.addEventListener('mouseleave', function () {
-                player_button.style.backgroundColor = ''
+                player_button.style.backgroundColor = '';
             });
             player_button.addEventListener('click', function () {
                 if (body.classList.contains("trade-player-button")) {
                     player_button.classList.toggle("trade-selected");
                     tradeInfo();
+                }
+                else if (player_button.classList.contains("remove-player")) {
+                    displayPlayer(player_button.id);
                 }
                 else {
                     queryPlayer(trade_dbData.find((element) => element.playerID == rowData.playerID));
@@ -119,7 +123,7 @@ async function createPlayerButtons() {
         });
     });
 
-    tradeInfo();
+    if (tradeAfter) tradeInfo();
 }
 
 function queryPlayer(data) {
@@ -262,7 +266,6 @@ function drawBoard(data, rowSize) {
     tableBody.innerHTML = "";
 
     var row = [];
-    var counter = 0;
     var sizeIndex = 0;
     data.forEach(rowData => {
         const hex = document.createElement("div");
@@ -323,20 +326,13 @@ async function addPlayerDropdown() {
 
 //https://stackoverflow.com/questions/10520899/form-action-with-javascript
 async function submitPlayer(data) {
-
     var values = {};
     for (element of data) {
         if (element.type == "submit") continue;
         values[`${element.name}`] = element.value;
     }
 
-    //https://code-boxx.com/call-php-file-from-javascript/
-    const response = await fetch("add_player.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values)
-    });
-    const dbData = await response.json();
+    const dbData = await runQuery("addPlayer", values)
     if (dbData === "success") notification("New Player Added!");
     else notification("Error Adding Player!");
 }
@@ -350,4 +346,90 @@ function submitGame(data) {
 
 function notification(msg) {
     alert(msg);
+}
+
+async function boardDownload(gameID) {
+    const dbData = await runQuery("getBoard", { gameID: gameID });
+    var size;
+    if (dbData.length > 20) size = [4, 5, 6, 5, 4];
+    else size = [3, 4, 5, 4, 3];
+
+    var data = [["Resource", "Number", "Location"]];
+    dbData.forEach(rowData => {
+        data.push([`${rowData.resource}`, `${rowData.number}`, `${rowData.location}`]);
+    });
+
+    download(csvmaker(data), gameID);
+}
+//https://www.geeksforgeeks.org/javascript/how-to-create-and-download-csv-file-in-javascript/
+const csvmaker = function (data) {
+
+    // Empty array for storing the values
+    csvRows = [];
+
+    // Pushing Object values into array
+    // with comma separation
+    const values = data.join('\n');
+    csvRows.push(values);
+
+    // Returning the array joining with new line 
+    return csvRows;
+}
+// Function to download the CSV file
+const download = (data, id) => {
+    // Create a Blob with the CSV data and type
+    const blob = new Blob([data], { type: 'text/csv' });
+
+    // Create a URL for the Blob
+    const url = URL.createObjectURL(blob);
+
+    // Create an anchor tag for downloading
+    const a = document.createElement('a');
+
+    // Set the URL and download attribute of the anchor tag
+    a.href = url;
+    a.download = `board_${id}.csv`;
+
+    // Trigger the download by clicking the anchor tag
+    a.click();
+}
+
+async function removePlayer(playerID) {
+
+    const playerData = await runQuery("getPlayerFromID", {id: playerID});
+
+    if (confirm(`Are you sure you want to remove ${playerData[0].name} from the database?`)) {
+        const status = await runQuery("removePlayer", {id: playerID});
+    }
+}
+
+async function displayPlayer(playerID) {
+    const playerData = await runQuery("getPlayerFromID", { id: playerID });
+
+    const nameTag = document.getElementById("player-alter-name");
+    nameTag.value = playerData[0].name;
+
+    const imageTag = document.getElementById("player-alter-image");
+    var http = new XMLHttpRequest();
+    http.open('HEAD', imageTag.src, false);
+    http.send();
+    if (http.status === 200) {
+        imageTag.src = `media/${nameTag.value.toLowerCase()}.png`;
+    } else {
+        imageTag.src = "media/default_player.png";
+    }
+
+    const idTag = document.getElementsByClassName("info-location")[0];
+    idTag.id = playerData[0].playerID;
+}
+
+async function alterPlayer() {
+    const idTag = document.getElementsByClassName("info-location")[0];
+    const nameTag = document.getElementById("player-alter-name");
+    
+    if (confirm(`Are you sure you want to change ${nameTag.name} in the database?`)) {
+        const status = await runQuery("alterPlayer", { name: nameTag.value, id: idTag.id })
+        if (status === "success") notification("Player Altered");
+        else notification("Error Altering Player!");
+    } 
 }
