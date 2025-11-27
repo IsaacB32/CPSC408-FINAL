@@ -94,7 +94,9 @@ async function createPlayerButtons(tradeAfter = true) {
             player_button.id = `${rowData.playerID}`;
 
             if (body.classList.contains("trade-player-button")) player_button.classList.add("trade-selected")
-            else if (body.classList.contains("remove-player-button")) player_button.classList.add("remove-player");
+            else if (body.classList.contains("alter-player-button")) player_button.classList.add("alter-player");
+            else if (body.classList.contains("delete-player-button")) player_button.classList.add("delete-player");
+            else player_button.classList.add("query-player");
 
             player_button.addEventListener('mouseover', function () {
                 player_button.style.backgroundColor = `${rowData.color}`;
@@ -107,11 +109,16 @@ async function createPlayerButtons(tradeAfter = true) {
                     player_button.classList.toggle("trade-selected");
                     tradeInfo();
                 }
-                else if (player_button.classList.contains("remove-player")) {
+                else if (player_button.classList.contains("alter-player")) {
                     displayPlayer(player_button.id);
+                    filterClickedVar(player_button, "alter-player");
+                }
+                else if (player_button.classList.contains("delete-player")) {
+                    deletePlayer(player_button.id);
                 }
                 else {
                     queryPlayer(trade_dbData.find((element) => element.playerID == rowData.playerID));
+                    filterClickedVar(player_button, "query-player")
                 }
             });
 
@@ -304,6 +311,16 @@ function filterClicked(clicked) {
     tradeInfo();
 }
 
+function filterClickedVar(clicked, filerName) {
+    const buttons = document.getElementsByClassName(filerName);
+    for (let f of buttons) {
+        f.classList.remove("selected");
+    }
+    if (clicked.id != -1) clicked.classList.add("selected");
+    tradeInfo();
+}
+
+
 async function addPlayerDropdown() {
     const dbData = await runQuery("getPlayers");
     const data = dbData.map(player => {
@@ -394,12 +411,17 @@ const download = (data, id) => {
     a.click();
 }
 
-async function removePlayer(playerID) {
+async function deletePlayer(playerID) {
 
     const playerData = await runQuery("getPlayerFromID", {id: playerID});
 
     if (confirm(`Are you sure you want to remove ${playerData[0].name} from the database?`)) {
-        const status = await runQuery("removePlayer", {id: playerID});
+        const status = await runQuery("deletePlayer", {id: playerID});
+        if (status === "success") {
+            notification("Player Deleted");
+            window.location.reload();
+        }
+        else notification("Error Deleting Player!");
     }
 }
 
@@ -429,7 +451,158 @@ async function alterPlayer() {
     
     if (confirm(`Are you sure you want to change ${nameTag.name} in the database?`)) {
         const status = await runQuery("alterPlayer", { name: nameTag.value, id: idTag.id })
-        if (status === "success") notification("Player Altered");
+        if (status === "success") {
+            notification("Player Altered");
+            window.location.reload();
+        }
         else notification("Error Altering Player!");
     } 
+}
+
+async function showWinner(gameID) {
+    const dbData = await runQuery("getWinner", {gameID: gameID});
+
+    const tableBody = document.querySelector("#dynamic-winner");
+    
+    const container = document.createElement("div");
+    container.classList.add("winner", "center", "center-text");
+
+    const label = document.createElement("div");
+    label.classList.add("catan-font", "catan-font-color")
+    label.innerHTML = "WINNER: "
+    container.appendChild(label);
+
+    const person = document.createElement("div");
+    person.innerHTML = `${dbData[0].winner}`;
+    container.appendChild(person);
+
+    tableBody.appendChild(container);
+}
+
+async function createPlayerGameButtons(gameID) {
+
+    const dbData = await runQuery("getPlayersInGame", {gameID: gameID});
+    const data = dbData.map(player => {
+        return {
+            playerName: player.name,
+            playerID: player.playerID,
+            color: playerColor(player.name)
+        };
+    });
+
+    const tableBody = document.querySelectorAll("#dynamic-player-buttons");
+    tableBody.forEach(body => {
+
+        data.forEach(rowData => {
+            const player_button = document.createElement("button");
+            player_button.classList.add("player-button", "selection-option");
+            player_button.id = `${rowData.playerID}`;
+
+            player_button.addEventListener('mouseover', function () {
+                player_button.style.backgroundColor = `${rowData.color}`;
+            });
+            player_button.addEventListener('mouseleave', function () {
+                player_button.style.backgroundColor = '';
+            });
+            player_button.addEventListener('click', function () {
+                getPlayerBuilds(gameID, player_button.id);
+                filterClickedVar(player_button, "selection-option");
+            });
+
+            const label = document.createElement("p");
+            label.textContent = `${rowData.playerName}`;
+
+            player_button.appendChild(label);
+            body.appendChild(player_button);
+        });
+
+        const clear_button = document.createElement("button");
+        clear_button.classList.add("player-button", "selection-option");
+        clear_button.id = '-1';
+
+        clear_button.addEventListener('mouseover', function () {
+            clear_button.style.backgroundColor = 'lightgray';
+        });
+        clear_button.addEventListener('mouseleave', function () {
+            clear_button.style.backgroundColor = '';
+        });
+        clear_button.addEventListener('click', function () {
+            getPlayerBuilds(gameID, clear_button.id);
+            filterClickedVar(clear_button, "selection-option");
+        });
+
+        const label = document.createElement("p");
+        label.textContent = 'clear';
+
+        clear_button.appendChild(label);
+        body.appendChild(clear_button);
+    });
+}
+
+async function getPlayerBuilds(gameID, playerID) {
+
+    const tableBody = document.querySelector("#dynamic-player-builds");
+    const listBody = document.createElement("div");
+    tableBody.innerHTML = "";
+    if (playerID == -1) return;
+
+    const dbData = await runQuery("getBuildsByGame", {gameID: gameID, playerID: playerID});
+
+    const title = document.createElement("div");
+    title.innerHTML = `${dbData[0].playerName.toUpperCase()}`;
+    title.classList.add("catan-font", "catan-font-color", "bold");
+    tableBody.appendChild(title);
+
+    dbData.forEach(rowData => {
+
+        const l = document.createElement("p");
+        l.innerHTML = `${rowData.buildingType} at ${rowData.vertex_id}`;
+        listBody.appendChild(l);
+    });
+    tableBody.appendChild(listBody);
+
+}
+
+async function createGameTrades(gameID) {
+    const dbData = await runQuery("getTradesByGame", {gameID: gameID});
+
+    const tableBody = document.querySelector("#dynamic-game-trades");
+
+    const total = document.getElementById("totaltrades");
+    total.innerHTML = `TOTAL TRADES MADE: ${dbData.length}`;
+
+    dbData.forEach(rowData => {
+        const container = document.createElement("div");
+        container.classList.add("horizontal-text", "trade");
+
+        const p1 = document.createElement("p");
+        p1.textContent = `${rowData.Player1}`;
+        container.appendChild(p1);
+
+        const g1 = document.createElement("p");
+        g1.textContent = "Gave";
+        container.appendChild(g1);
+
+        const r1 = document.createElement("p");
+        r1.textContent = `${rowData.Gave1}`;
+        container.appendChild(r1);
+
+        const a = document.createElement("a");
+        a.textContent = "AND";
+        container.appendChild(a);
+
+        const p2 = document.createElement("p");
+        p2.textContent = `${rowData.Player2}`;
+        container.appendChild(p2);
+
+        const g2 = document.createElement("p");
+        g2.textContent = "Gave";
+        container.appendChild(g2);
+
+        const r2 = document.createElement("p");
+        r2.textContent = `${rowData.Gave2}`;
+        container.appendChild(r2);
+
+        tableBody.appendChild(container);
+    });
 }

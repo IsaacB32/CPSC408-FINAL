@@ -16,13 +16,13 @@ If `mysqli` cannot be found you might be missing some requirements, google to fi
 - [X] 1. Print/display records from your database/tables.
 - [X] 2. Query for data/results with various parameters/filters
 - [X] 3. Create a new record
-- [ ] 4. Delete records (soft delete function would be ideal)
+- [X] 4. Delete records (soft delete function would be ideal)
 - [X] 5. Update records
 - [ ] 6. Make use of transactions (commit & rollback)
 - [X] 7. Generate reports that can be exported (excel or csv format)
 - [X] 8. One query must perform an aggregation/group-by clause
-- [ ] 9. One query must contain a subquery.
-- [ ] 10. Two queries must involve joins across at least 3 tables
+- [X] 9. One query must contain a subquery.
+- [X] 10. Two queries must involve joins across at least 3 tables
 - [ ] 11. Enforce referential integrality (PK/FK Constraints)
 - [ ] 12. Include Database Views, Indexes
 - [X] 13. Use at least 5 entities

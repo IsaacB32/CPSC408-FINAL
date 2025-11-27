@@ -17,10 +17,16 @@ body {
     --blaise-color: blue;
     --michael-color: green;
     --faith-color: orange;
+
+    --stat-background: rgb(from var(--color-red) r 10 10);
 }
 
 h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
     cursor: default;
+}
+
+.bold {
+    font-weight: bold;
 }
 
 .line {
@@ -156,7 +162,8 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
 
 .player-info-card {
     height: 100px;
-    background-color: white;
+    background-color: var(--stat-background);
+    border-radius: 20px;
     padding: 1px;
 }
 .player-info-card p {
@@ -257,10 +264,16 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
     transform: translate(-50%, -50%);
 }
 
+.winner {
+    background-color: var(--stat-background);
+    border-radius: 20px;
+    padding: 10px 0px 10px 0px;
+}
+
 
 /* TRADES */
 .trade {
-    background-color: white;
+    background-color: var(--stat-background);
     border-radius: 20px;
     margin: 10px;
 }
@@ -276,6 +289,10 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
     padding: 10px;
 }
 .trade-selected {
+    border-color: gold;
+}
+
+.selected {
     border-color: gold;
 }
 
@@ -297,6 +314,12 @@ h1:hover,h2:hover,h3:hover,h4:hover,h5:hover,h6:hover,p:hover,footer:hover {
     background-clip: text;
     color: transparent;
     margin: auto;
+}
+
+.player-builds {
+    background-color:  var(--stat-background);
+    padding: 10px 0px 10px 0px;
+    border-radius: 20px;
 }
 
 #debug-border {

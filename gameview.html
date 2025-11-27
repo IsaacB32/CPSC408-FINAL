@@ -34,16 +34,32 @@
     
    <section class="card-style">
         <h2 class="catan-font catan-font-color" style="padding-left: 10px;">GAME</h2>
-        <div class="center center-text">
-            <div id="dynamic-board" class="board"></div>
-            <button id="board-download" onclick="boardDownload(gameID)">download board</button>
+            <div class="center center-text">
+                <div id="dynamic-board" class="board"></div>
+                <button id="board-download" onclick="boardDownload(gameID)">download board</button>
+            </div>  
         </div>
    </section>
 
     <section class="card-style">
-        <h2 class="catan-font catan-font-color" style="padding-left: 10px;">STATS</h2>
-        <div class="person-card">
-            <img src="media/jake.png">
+        <h2 class="catan-font catan-font-color" style="padding-left: 10px;">WINNER</h2>
+        <div class="" id="dynamic-winner">
+            
+        </div>
+    </section>
+
+    <section class="card-style">
+        <h2 class="catan-font catan-font-color" style="padding-left: 10px;">GAME BUILDS</h2>
+        <div class="center center-text">
+            <div class="game-builds-button" id="dynamic-player-buttons"></div>
+            <div class="player-builds" id="dynamic-player-builds"></div>
+        </div>
+    </section>
+
+    <section class="card-style">
+        <h2 class="catan-font catan-font-color" style="padding-left: 10px;">GAME TRADES</h2>  
+        <div class="" id="dynamic-game-trades">
+            <h3 class="center-text catan-font catan-font-color" id="totaltrades">TOTAL TRADES MADE</h3>
         </div>
     </section>
 
@@ -51,6 +67,10 @@
         const params = new URLSearchParams(window.location.search);
         const gameID = params.get("gameID");
         createGameView(gameID);
+
+        createPlayerGameButtons(gameID);
+        showWinner(gameID);
+        createGameTrades(gameID);
     </script>
 </body>
 

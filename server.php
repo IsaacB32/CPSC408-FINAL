@@ -124,6 +124,21 @@ function getAllTrades($conn, $ids) {
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
+function getTradesByGame($conn, $gameID) {
+    $stmt = $conn->prepare("
+        SELECT p_from.name AS Player1, playertrade.fromPlayerGave AS Gave1, p_to.name AS Player2, playertrade.toPlayerGave AS Gave2
+        FROM playertrade
+        INNER JOIN player p_from ON p_from.playerID = playertrade.fromPlayerID
+        INNER JOIN player p_to ON p_to.playerID = playertrade.toPlayerID
+        INNER JOIN trade ON trade.tradeID = playertrade.tradeID
+        WHERE gameID = ?
+        ORDER BY playertrade.tradeID;
+    ");
+    $stmt->bind_param("i", $gameID);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
 function addPlayer($conn, $data) {
     $name = mysqli_real_escape_string($conn, $data['name']);
 
@@ -147,9 +162,9 @@ function getPlayerFromID($conn, $id) {
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
-function removePlayer($conn, $id) {
+function deletePlayer($conn, $id) {
     $query = "
-        INSERT INTO player(name, wins, numClosets) VALUES ('$name', 0, 0)
+        DELETE FROM player WHERE playerID = $id;
     ";
 
     if ($conn->query($query) === TRUE) {
@@ -171,6 +186,40 @@ function alterPlayer($conn, $name, $id) {
     } else {
         return "Error: " . $sql . "<br>" . $conn->error;
     }
+}
+
+function getWinner($conn, $gameID) {
+    $stmt = $conn->prepare("
+        SELECT player.name AS winner
+        FROM game
+        INNER JOIN player ON game.winnerID = player.playerID
+        WHERE game.gameID = ?;
+    ");
+    $stmt->bind_param("i", $gameID);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+function getBuildsByGame($conn, $gameID, $playerID) {
+    $stmt = $conn->prepare("
+        CALL buildings(?, ?);
+    ");
+    $stmt->bind_param("ii", $gameID, $playerID);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);  
+}
+
+function getPlayersInGame($conn, $gameID) {
+    $stmt = $conn->prepare("
+        SELECT player.name, player.playerID
+        FROM game
+        INNER JOIN playergame ON game.gameID = playergame.gameID
+        INNER JOIN player ON playergame.playerID = player.playerID
+        WHERE game.gameID = ?;
+    ");
+    $stmt->bind_param("i", $gameID);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
 switch ($action) {
@@ -201,8 +250,8 @@ switch ($action) {
     case "addPlayer":
         echo json_encode(addPlayer($conn, $data));
         break;
-    case "removePlayer":
-        echo json_encode(removePlayer($conn, $data['id']));
+    case "deletePlayer":
+        echo json_encode(deletePlayer($conn, $data['id']));
         break;
     case "getPlayerFromID":
         echo json_encode(getPlayerFromID($conn, $data['id']));
@@ -210,9 +259,21 @@ switch ($action) {
     case "alterPlayer":
         echo json_encode(alterPlayer($conn, $data['name'], $data['id']));
         break;
-
+    case "getBuildsByGame":
+        echo json_encode(getBuildsByGame($conn, $data['gameID'], $data['playerID']));
+        break;
+    case "getPlayersInGame":
+        echo json_encode(getPlayersInGame($conn, $data['gameID']));
+        break;
+    case "getWinner":
+        echo json_encode(getWinner($conn, $data['gameID']));
+        break;
+    case "getTradesByGame":
+        echo json_encode(getTradesByGame($conn, $data['gameID']));
+        break;
     default:
         echo json_encode(["error" => "Invalid action"]);
+        break;
 }
 
 $conn->close();

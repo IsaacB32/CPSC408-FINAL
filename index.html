@@ -96,3 +96,76 @@ SELECT * FROM trades (GROUP BY playerID)
 SELECT * FROM trades WHERE playerID = <given_player_id>
 SELECT * FROM trades WHERE gameID = <given_game_id>
 -->
+
+<!-- SELECT
+gameID,
+playerID,
+playerName,
+buildingType,
+vertex_id
+
+FROM (
+SELECT
+bt.gameID,
+bt.playerID,
+p.name AS playerName,
+b.type AS buildingType,
+
+# Make a vertex id ("location:build index") and then pick the smallest and the equivalent one from
+# equivalence table
+# ChatGPT helped me figure out how to use padding and coalesce, but I wrote the query myself
+# The padding is used so that the numbers can be compared as strings
+# Coalesce is used for the case that there isn't any equivalent value in the equiv table
+MIN(
+LEAST(
+CONCAT(LPAD(gt.location,2,'0'), ':', LPAD(bt.buildIndex,2,'0')),
+CONCAT(
+LPAD(COALESCE(e.loc2, gt.location),2,'0'), ':', LPAD(COALESCE(e.bi2, bt.buildIndex),2,'0')
+)
+)
+) AS vertex_id,
+
+gt.location
+FROM buildingtile bt
+JOIN gametile gt
+ON bt.tileID = gt.tileID AND bt.gameID = gt.gameID
+LEFT JOIN equiv e
+ON gt.location = e.loc1 AND bt.buildIndex = e.bi1
+
+
+JOIN player p ON bt.playerID = p.playerID
+JOIN building b ON bt.buildingID = b.buildingID
+
+
+#edit here for different games and players
+WHERE bt.gameID = <given_game>
+    AND bt.playerID = <given_player_id>
+
+        GROUP BY
+        bt.gameID,
+        bt.playerID,
+        bt.buildingID,
+        bt.buildIndex,
+        gt.location,
+        p.name,
+        b.type
+        ) AS innerq
+
+        GROUP BY
+        gameID,
+        playerID,
+        playerName,
+        buildingType,
+        vertex_id
+
+        ORDER BY vertex_id; -->
+
+        <!-- # - trades by game
+        # SELECT p_from.name AS Player1, playertrade.fromPlayerGave AS Gave, p_to.name AS Player2, playertrade.toPlayerGave AS
+        Gave
+        # FROM playertrade
+        # INNER JOIN player p_from ON p_from.playerID = playertrade.fromPlayerID
+        # INNER JOIN player p_to ON p_to.playerID = playertrade.toPlayerID
+        # INNER JOIN trade ON trade.tradeID = playertrade.tradeID
+        # WHERE gameID = <given_game>
+            # ORDER BY playertrade.tradeID -->
