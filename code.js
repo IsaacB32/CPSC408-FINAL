@@ -414,6 +414,11 @@ const download = (data, id) => {
 async function deletePlayer(playerID) {
 
     const playerData = await runQuery("getPlayerFromID", {id: playerID});
+    const playerValidToDelete = await runQuery("canDeletePlayer", {id: playerID});
+    if (playerValidToDelete.length != 0) {
+        notification("Cannot delete player that has played a game!");
+        return;
+    }
 
     if (confirm(`Are you sure you want to remove ${playerData[0].name} from the database?`)) {
         const status = await runQuery("deletePlayer", {id: playerID});

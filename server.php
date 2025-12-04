@@ -222,6 +222,19 @@ function getPlayersInGame($conn, $gameID) {
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
+function canDeletePlayer($conn, $playerID) {
+    $stmt = $conn->prepare("
+        SELECT playergame.playerID AS valid
+        FROM game
+        INNER JOIN playergame ON game.gameID = playergame.gameID
+        WHERE playergame.playerID = ?
+        GROUP BY playergame.playerID;
+    ");
+    $stmt->bind_param("i", $playerID);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
 switch ($action) {
     case "getTradeCounts":
         echo json_encode(getTradeCounts($conn));
@@ -270,6 +283,9 @@ switch ($action) {
         break;
     case "getTradesByGame":
         echo json_encode(getTradesByGame($conn, $data['gameID']));
+        break;
+    case "canDeletePlayer":
+        echo json_encode(canDeletePlayer($conn, $data['id']));
         break;
     default:
         echo json_encode(["error" => "Invalid action"]);
